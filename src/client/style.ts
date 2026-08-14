@@ -77,12 +77,12 @@ body[data-ds-theme^='angelina-'] [data-ds-conversation-column] [data-phase='hero
   opacity: 0;
 }
 
-/* Active conversation stays readable: a translucent tint, without a full
- * column blur that would soften every message and the composer at once. */
+/* A shallow backdrop blur softens the artwork without filtering descendants. */
 body[data-ds-theme^='angelina-'] [data-ds-conversation-column] [data-phase='active'] [data-conversation-scroll] {
   background: rgba(8, 13, 19, 0.14);
   background: color-mix(in srgb, var(--dsw-alias-bg-base) 14%, transparent);
-  backdrop-filter: none;
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
 }
 
 body[data-ds-theme^='angelina-'] [data-ds-conversation-column] [data-phase='active'] [data-composer-seat] {
@@ -291,6 +291,11 @@ body[data-dsh-angelina-parallax] [data-ds-conversation-column] [data-phase='acti
 }
 
 @media (prefers-reduced-transparency: reduce) {
+  body[data-ds-theme^='angelina-'] [data-ds-conversation-column] [data-phase='active'] [data-conversation-scroll] {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
   body[data-ds-theme^='angelina-'] :is(
     [data-composer-card],
     [role='menu'],

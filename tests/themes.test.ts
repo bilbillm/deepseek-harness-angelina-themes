@@ -38,10 +38,11 @@ body[data-dsh-angelina-parallax] [data-ds-conversation-column] [data-phase='acti
     expect(ANGELINA_CSS).not.toContain('--dsh-angelina-thread-')
   })
 
-  it('keeps active chat clear while applying glass to leaf surfaces', () => {
+  it('softens active artwork while applying glass to leaf surfaces', () => {
     const active = ANGELINA_CSS.match(/\[data-phase='active'\] \[data-conversation-scroll\] \{([^}]*)\}/s)?.[1] ?? ''
     expect(active).toContain('14%')
-    expect(active).toContain('backdrop-filter: none')
+    expect(active).toContain('-webkit-backdrop-filter: blur(3px)')
+    expect(active).toContain('backdrop-filter: blur(3px)')
     expect(ANGELINA_CSS).toContain("[role='menu']")
     expect(ANGELINA_CSS).toContain("[role='listbox']")
     expect(ANGELINA_CSS).toContain("[role='dialog']")

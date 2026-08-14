@@ -45,7 +45,7 @@ pnpm smoke
 
 The light theme uses background `-5/-3` and foreground `10/6` artwork parallax. Dark uses a restrained background `0.5/0.25` layer. The Hero composer retains the Harness default layout, and titles, selectors, composers, controls, and copy do not move. Motion is disabled or reset for reduced motion, touch input, viewports at or below 900px, blur, and hidden pages.
 
-Empty and active conversations share the same artwork position and parallax layers. Glass is restricted to leaf surfaces, while active conversation content receives only a translucent tint without a full-column blur, preserving text clarity and fixed overlay positioning.
+Empty and active conversations share the same artwork position and parallax layers. Glass is restricted to leaf surfaces, while active conversation content receives a translucent tint and shallow 3px backdrop blur; its text and controls remain sharp, and fixed overlays retain viewport positioning.
 
 ## License and assets
 
