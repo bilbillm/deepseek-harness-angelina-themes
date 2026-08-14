@@ -1,0 +1,5 @@
+# Mount the browser client face when the package is installed with
+# `dsh plugin --profile web add`.
+- insert:
+    - id: dsh-angelina-themes
+      name: dsh-angelina-themes

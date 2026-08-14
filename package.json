@@ -1,0 +1,100 @@
+{
+  "name": "dsh-angelina-themes",
+  "version": "0.1.0",
+  "description": "Angelina light and dark glass themes with restrained parallax for DeepSeek Harness",
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./client": "./lib/client.js",
+    "./themes.json": "./src/themes.json",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-theme",
+        "@deepseek-ai/dsh-client-runtime",
+        "@deepseek-ai/dsh-client-ui-slots",
+        "@deepseek-ai/dsh-client-ui-settings",
+        "@deepseek-ai/dsh-client-locale"
+      ],
+      "platform": "web",
+      "immediately": true
+    },
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "scripts": {
+    "generate-assets": "node scripts/generate-assets.mjs",
+    "build": "pnpm generate-assets && tsdown",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "smoke": "node scripts/package-smoke.mjs",
+    "verify": "pnpm typecheck && pnpm build && pnpm test && pnpm smoke"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bilbillm/deepseek-harness-angelina-themes.git"
+  },
+  "homepage": "https://github.com/bilbillm/deepseek-harness-angelina-themes",
+  "bugs": "https://github.com/bilbillm/deepseek-harness-angelina-themes/issues",
+  "license": "MIT",
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "theme",
+    "angelina",
+    "parallax"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-client-locale": ">=0.0.1-rc.1",
+    "@deepseek-ai/dsh-client-runtime": ">=0.0.1-rc.1",
+    "@deepseek-ai/dsh-client-ui-settings": ">=0.0.1-rc.1",
+    "@deepseek-ai/dsh-client-ui-slots": ">=0.0.1-rc.1",
+    "@deepseek-ai/dsh-client-ui-theme": ">=0.0.1-rc.1",
+    "react": "^18.2.0"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/cordis": { "optional": true },
+    "@deepseek-ai/dsh-client-locale": { "optional": true },
+    "@deepseek-ai/dsh-client-runtime": { "optional": true },
+    "@deepseek-ai/dsh-client-ui-settings": { "optional": true },
+    "@deepseek-ai/dsh-client-ui-slots": { "optional": true },
+    "@deepseek-ai/dsh-client-ui-theme": { "optional": true },
+    "react": { "optional": true }
+  },
+  "devDependencies": {
+    "@types/node": "22.19.21",
+    "@types/react": "18.3.1",
+    "jsdom": "29.1.1",
+    "react": "18.3.1",
+    "tsdown": "0.22.14",
+    "typescript": "5.9.2",
+    "vitest": "3.2.4"
+  },
+  "files": [
+    "lib",
+    "src",
+    "scripts",
+    "build",
+    "tests",
+    "cordis.patch.yml",
+    "README.md",
+    "README.en.md",
+    "LICENSE",
+    "THIRD-PARTY-NOTICES.md",
+    "ASSET-PROVENANCE.md"
+  ]
+}
