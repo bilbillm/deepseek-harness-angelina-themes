@@ -55,8 +55,8 @@ describe('AngelinaParallaxController', () => {
       .toContain('translate3d(-5px, -3px, 0)')
     expect(document.querySelector('[data-dsh-angelina-layer="foreground"]')?.getAttribute('style'))
       .toContain('translate3d(10px, 6px, 0)')
-    expect(document.body.style.getPropertyValue('--dsh-angelina-copy-parallax-x')).toBe('4px')
-    expect(document.body.style.getPropertyValue('--dsh-angelina-copy-parallax-y')).toBe('2.5px')
+    expect(document.body.style.getPropertyValue('--dsh-angelina-copy-parallax-x')).toBe('')
+    expect(document.body.style.getPropertyValue('--dsh-angelina-copy-parallax-y')).toBe('')
     controller.dispose()
   })
 
@@ -69,7 +69,7 @@ describe('AngelinaParallaxController', () => {
     flushFrame()
     expect(document.querySelector('[data-dsh-angelina-layer="background"]')?.getAttribute('style'))
       .toContain('translate3d(0.5px, 0.25px, 0)')
-    expect(document.body.style.getPropertyValue('--dsh-angelina-copy-parallax-x')).toBe('1.5px')
+    expect(document.body.style.getPropertyValue('--dsh-angelina-copy-parallax-x')).toBe('')
     controller.dispose()
   })
 
@@ -90,11 +90,14 @@ describe('AngelinaParallaxController', () => {
     expect(document.body.getAttribute('data-dsh-angelina-parallax')).toBe('light')
   })
 
-  it('restores previous body writes after switching away', () => {
+  it('restores its body attribute without changing unrelated body styles', () => {
     document.body.setAttribute('data-dsh-angelina-parallax', 'legacy')
     document.body.style.setProperty('--dsh-angelina-copy-parallax-x', '9px')
     const controller = new AngelinaParallaxController()
     controller.sync('angelina-light')
+    pointer(window.innerWidth, window.innerHeight)
+    flushFrame()
+    expect(document.body.style.getPropertyValue('--dsh-angelina-copy-parallax-x')).toBe('9px')
     controller.sync('system')
     expect(document.body.getAttribute('data-dsh-angelina-parallax')).toBe('legacy')
     expect(document.body.style.getPropertyValue('--dsh-angelina-copy-parallax-x')).toBe('9px')

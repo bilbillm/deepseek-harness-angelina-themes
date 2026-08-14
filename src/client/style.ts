@@ -28,8 +28,6 @@ body[data-ds-theme='angelina-dark'] {
   --dsh-angelina-glass-highlight: rgba(255, 255, 255, 0.62);
   --dsh-angelina-glass-shadow: 0 12px 32px rgba(62, 43, 42, 0.14);
   --dsh-angelina-glass-filter: blur(12px) saturate(118%);
-  --dsh-angelina-copy-parallax-x: 0px;
-  --dsh-angelina-copy-parallax-y: 0px;
   background-color: var(--dsw-alias-bg-base);
   background-image: var(--dsh-angelina-hero-image);
   background-position: var(--dsh-angelina-hero-position);
@@ -87,12 +85,6 @@ body[data-ds-theme^='angelina-'] [data-ds-conversation-column] [data-phase='sett
 body[data-ds-theme^='angelina-'] [data-ds-conversation-column] [data-phase='active'] {
   background-image: var(--dsh-angelina-thread-scrim), var(--dsh-angelina-thread-image);
   background-position: center, var(--dsh-angelina-thread-position);
-}
-
-body[data-ds-theme^='angelina-'] [data-ds-conversation-column] [data-phase='hero'] [data-ds-composer-mode='hero'] {
-  align-self: flex-start;
-  width: min(62%, calc(var(--dsh-composer-card-max-width) + 2 * var(--dsh-composer-side-clearance)));
-  margin-left: clamp(16px, 5vw, 72px);
 }
 
 body[data-ds-theme^='angelina-'] [data-ds-conversation-column] [data-phase='hero'] svg[class*='heroGlow'] {
@@ -196,11 +188,6 @@ body[data-dsh-angelina-parallax] [data-ds-app-frame] {
 body[data-dsh-angelina-parallax] [data-ds-conversation-column] [data-phase='hero'],
 body[data-dsh-angelina-parallax] [data-ds-conversation-column] [data-phase='settling'] {
   background-image: var(--dsh-angelina-app-scrim);
-}
-
-body[data-dsh-angelina-parallax] [data-phase='hero'] [data-ds-composer-mode='hero'] {
-  translate: var(--dsh-angelina-copy-parallax-x, 0px) var(--dsh-angelina-copy-parallax-y, 0px);
-  will-change: translate;
 }
 
 /* Standalone settings row. */
@@ -308,18 +295,8 @@ body[data-dsh-angelina-parallax] [data-phase='hero'] [data-ds-composer-mode='her
     --dsh-angelina-thread-position: 68% 42%;
   }
 
-  body[data-ds-theme^='angelina-'] [data-ds-conversation-column] [data-phase='hero'] [data-ds-composer-mode='hero'] {
-    align-self: center;
-    width: min(calc(var(--dsh-composer-card-max-width) + 2 * var(--dsh-composer-side-clearance)), 100%);
-    margin-left: 0;
-  }
-
   body[data-dsh-angelina-parallax] [data-dsh-angelina-layer] {
     transform: none !important;
-  }
-
-  body[data-dsh-angelina-parallax] [data-phase='hero'] [data-ds-composer-mode='hero'] {
-    translate: none;
   }
 
   .dsh-angelina-picker-grid {
@@ -349,10 +326,6 @@ body[data-dsh-angelina-parallax] [data-phase='hero'] [data-ds-composer-mode='her
 @media (prefers-reduced-motion: reduce) {
   body[data-dsh-angelina-parallax] [data-dsh-angelina-layer] {
     transform: none !important;
-  }
-
-  body[data-dsh-angelina-parallax] [data-phase='hero'] [data-ds-composer-mode='hero'] {
-    translate: none;
   }
 }
 `

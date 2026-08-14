@@ -43,7 +43,7 @@ pnpm smoke
 
 ## Motion and glass contract
 
-The light theme uses background `-5/-3`, foreground `10/6`, and copy `4/2.5` parallax. Dark uses a restrained background `0.5/0.25` layer and copy `1.5/1`. Motion is disabled or reset for reduced motion, touch input, viewports at or below 900px, blur, and hidden pages.
+The light theme uses background `-5/-3` and foreground `10/6` artwork parallax. Dark uses a restrained background `0.5/0.25` layer. The Hero composer retains the Harness default layout, and titles, selectors, composers, controls, and copy do not move. Motion is disabled or reset for reduced motion, touch input, viewports at or below 900px, blur, and hidden pages.
 
 Glass is restricted to leaf surfaces. Active conversation content receives a translucent tint without a full-column blur, preserving text clarity and fixed overlay positioning.
 

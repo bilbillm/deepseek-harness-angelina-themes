@@ -40,4 +40,9 @@ describe('theme payload', () => {
     expect(ANGELINA_CSS).toContain('--dsh-angelina-light-parallax-background')
     expect(ANGELINA_CSS).toContain('--dsh-angelina-light-parallax-foreground')
   })
+
+  it('leaves composer placement and interface copy motion to the host', () => {
+    expect(ANGELINA_CSS).not.toContain("[data-ds-composer-mode='hero']")
+    expect(ANGELINA_CSS).not.toContain('--dsh-angelina-copy-parallax-')
+  })
 })
