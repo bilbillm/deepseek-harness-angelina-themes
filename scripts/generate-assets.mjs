@@ -9,8 +9,6 @@ const generatedRoot = resolve(root, 'src', 'client')
 const assetFiles = {
   lightHero: 'angelina-light-hero.webp',
   darkHero: 'angelina-dark-hero.webp',
-  lightThread: 'angelina-light-thread.webp',
-  darkThread: 'angelina-dark-thread.webp',
   lightParallaxBackground: 'angelina-light-parallax-background.webp',
   lightParallaxForeground: 'angelina-light-parallax-foreground.webp',
 }

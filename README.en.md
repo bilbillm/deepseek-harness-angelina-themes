@@ -2,7 +2,7 @@
 
 An independent `dsh-plugin` that ports the Codex Angelina light and dark themes to [deepseek-harness](https://github.com/deepseek-ai/deepseek-harness).
 
-It includes the full token palettes, leaf-node frosted glass for inputs/composer/menus/listboxes/dialogs, a softened active conversation surface, Codex-matched parallax, reduced-motion and touch fallbacks, a settings row, durable selection, and complete unload cleanup.
+It includes the full token palettes, leaf-node frosted glass for inputs/composer/menus/listboxes/dialogs, one artwork composition and parallax path shared by empty and active conversations, reduced-motion and touch fallbacks, a settings row, durable selection, and complete unload cleanup.
 
 简体中文: [README.md](README.md)
 
@@ -45,7 +45,7 @@ pnpm smoke
 
 The light theme uses background `-5/-3` and foreground `10/6` artwork parallax. Dark uses a restrained background `0.5/0.25` layer. The Hero composer retains the Harness default layout, and titles, selectors, composers, controls, and copy do not move. Motion is disabled or reset for reduced motion, touch input, viewports at or below 900px, blur, and hidden pages.
 
-Glass is restricted to leaf surfaces. Active conversation content receives a translucent tint without a full-column blur, preserving text clarity and fixed overlay positioning.
+Empty and active conversations share the same artwork position and parallax layers. Glass is restricted to leaf surfaces, while active conversation content receives only a translucent tint without a full-column blur, preserving text clarity and fixed overlay positioning.
 
 ## License and assets
 

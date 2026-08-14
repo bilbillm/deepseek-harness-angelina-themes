@@ -7,8 +7,6 @@ export const ANGELINA_CSS = `
 :root {
   --dsh-angelina-light-hero: ${url(ANGELINA_ASSETS.lightHero)};
   --dsh-angelina-dark-hero: ${url(ANGELINA_ASSETS.darkHero)};
-  --dsh-angelina-light-thread: ${url(ANGELINA_ASSETS.lightThread)};
-  --dsh-angelina-dark-thread: ${url(ANGELINA_ASSETS.darkThread)};
   --dsh-angelina-light-parallax-background: ${url(ANGELINA_ASSETS.lightParallaxBackground)};
   --dsh-angelina-light-parallax-foreground: ${url(ANGELINA_ASSETS.lightParallaxForeground)};
 }
@@ -16,11 +14,8 @@ export const ANGELINA_CSS = `
 body[data-ds-theme='angelina-light'],
 body[data-ds-theme='angelina-dark'] {
   --dsh-angelina-hero-image: none;
-  --dsh-angelina-thread-image: none;
   --dsh-angelina-hero-position: 68% 42%;
-  --dsh-angelina-thread-position: 68% 42%;
   --dsh-angelina-app-scrim: transparent;
-  --dsh-angelina-thread-scrim: transparent;
   --dsh-angelina-glass-input: rgba(251, 250, 248, 0.72);
   --dsh-angelina-glass-menu: rgba(251, 250, 248, 0.8);
   --dsh-angelina-glass-dialog: rgba(251, 250, 248, 0.78);
@@ -37,20 +32,15 @@ body[data-ds-theme='angelina-dark'] {
 
 body[data-ds-theme='angelina-light'] {
   --dsh-angelina-hero-image: var(--dsh-angelina-light-hero);
-  --dsh-angelina-thread-image: var(--dsh-angelina-light-thread);
   --dsh-angelina-app-scrim: linear-gradient(90deg, rgb(235 232 227 / 92%) 0 20%, rgb(235 232 227 / 18%) 54%, rgb(235 232 227 / 4%) 100%);
-  --dsh-angelina-thread-scrim: linear-gradient(90deg, rgb(235 232 227 / 92%) 0 35%, rgb(235 232 227 / 64%) 68%, rgb(235 232 227 / 46%) 100%);
   --dsh-angelina-parallax-background-image: var(--dsh-angelina-light-parallax-background);
   --dsh-angelina-parallax-foreground-image: var(--dsh-angelina-light-parallax-foreground);
 }
 
 body[data-ds-theme='angelina-dark'] {
   --dsh-angelina-hero-image: var(--dsh-angelina-dark-hero);
-  --dsh-angelina-thread-image: var(--dsh-angelina-dark-thread);
   --dsh-angelina-hero-position: 74% 42%;
-  --dsh-angelina-thread-position: 74% 42%;
   --dsh-angelina-app-scrim: linear-gradient(90deg, rgb(8 13 19 / 94%) 0 20%, rgb(8 13 19 / 30%) 54%, rgb(8 13 19 / 8%) 100%);
-  --dsh-angelina-thread-scrim: linear-gradient(90deg, rgb(8 13 19 / 94%) 0 35%, rgb(8 13 19 / 72%) 68%, rgb(8 13 19 / 54%) 100%);
   --dsh-angelina-glass-input: rgba(17, 24, 32, 0.68);
   --dsh-angelina-glass-menu: rgba(24, 34, 43, 0.76);
   --dsh-angelina-glass-dialog: rgba(26, 36, 45, 0.78);
@@ -78,13 +68,9 @@ body[data-ds-theme^='angelina-'] [data-ds-conversation-column] [data-phase] {
 }
 
 body[data-ds-theme^='angelina-'] [data-ds-conversation-column] [data-phase='hero'],
-body[data-ds-theme^='angelina-'] [data-ds-conversation-column] [data-phase='settling'] {
-  background-image: var(--dsh-angelina-app-scrim), var(--dsh-angelina-hero-image);
-}
-
+body[data-ds-theme^='angelina-'] [data-ds-conversation-column] [data-phase='settling'],
 body[data-ds-theme^='angelina-'] [data-ds-conversation-column] [data-phase='active'] {
-  background-image: var(--dsh-angelina-thread-scrim), var(--dsh-angelina-thread-image);
-  background-position: center, var(--dsh-angelina-thread-position);
+  background-image: var(--dsh-angelina-app-scrim), var(--dsh-angelina-hero-image);
 }
 
 body[data-ds-theme^='angelina-'] [data-ds-conversation-column] [data-phase='hero'] svg[class*='heroGlow'] {
@@ -186,7 +172,8 @@ body[data-dsh-angelina-parallax] [data-ds-app-frame] {
 }
 
 body[data-dsh-angelina-parallax] [data-ds-conversation-column] [data-phase='hero'],
-body[data-dsh-angelina-parallax] [data-ds-conversation-column] [data-phase='settling'] {
+body[data-dsh-angelina-parallax] [data-ds-conversation-column] [data-phase='settling'],
+body[data-dsh-angelina-parallax] [data-ds-conversation-column] [data-phase='active'] {
   background-image: var(--dsh-angelina-app-scrim);
 }
 
@@ -292,7 +279,6 @@ body[data-dsh-angelina-parallax] [data-ds-conversation-column] [data-phase='sett
 @media (max-width: 900px) {
   body[data-ds-theme^='angelina-'] {
     --dsh-angelina-hero-position: 68% 42%;
-    --dsh-angelina-thread-position: 68% 42%;
   }
 
   body[data-dsh-angelina-parallax] [data-dsh-angelina-layer] {

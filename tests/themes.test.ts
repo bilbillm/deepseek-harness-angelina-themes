@@ -18,10 +18,24 @@ describe('theme payload', () => {
   })
 
   it('embeds every image locally as WebP', () => {
-    expect(Object.keys(ANGELINA_ASSETS)).toHaveLength(6)
+    expect(Object.keys(ANGELINA_ASSETS)).toHaveLength(4)
     for (const value of Object.values(ANGELINA_ASSETS)) {
       expect(value.startsWith('data:image/webp;base64,UklGR')).toBe(true)
     }
+  })
+
+  it('keeps hero, settling, and active conversations on one artwork coordinate system', () => {
+    expect(ANGELINA_CSS).toContain(`body[data-ds-theme^='angelina-'] [data-ds-conversation-column] [data-phase='hero'],
+body[data-ds-theme^='angelina-'] [data-ds-conversation-column] [data-phase='settling'],
+body[data-ds-theme^='angelina-'] [data-ds-conversation-column] [data-phase='active'] {
+  background-image: var(--dsh-angelina-app-scrim), var(--dsh-angelina-hero-image);
+}`)
+    expect(ANGELINA_CSS).toContain(`body[data-dsh-angelina-parallax] [data-ds-conversation-column] [data-phase='hero'],
+body[data-dsh-angelina-parallax] [data-ds-conversation-column] [data-phase='settling'],
+body[data-dsh-angelina-parallax] [data-ds-conversation-column] [data-phase='active'] {
+  background-image: var(--dsh-angelina-app-scrim);
+}`)
+    expect(ANGELINA_CSS).not.toContain('--dsh-angelina-thread-')
   })
 
   it('keeps active chat clear while applying glass to leaf surfaces', () => {
