@@ -22,6 +22,8 @@ dsh plugin --profile web remove dsh-angelina-themes
 
 The package commits `lib/`, so a GitHub source install does not depend on a user-side build. Selection is stored under the browser-local `dsh-angelina-themes.selection` key; switching back to a host built-in clears that marker to `system`. Browser-local persistence is intentional because upstream Harness exposes a fixed Host settings namespace allowlist. The fork's built-in themes still persist through its `ui-theme` namespace.
 
+Published Harness `0.1.0-rc.6` presents the active color scheme and tokens but not the theme id required by third-party CSS selectors. In that environment the plugin synchronizes `body[data-ds-theme]` and restores its previous value on unload; it does not take ownership when the fork already provides the themes.
+
 ## Fork compatibility
 
 The `feature/angelina-themes` fork already registers both ids. The plugin checks `ctx.theme.getTheme().themes`, reuses existing ids, and registers only missing definitions. It therefore avoids duplicate-id failures and never disposes a theme owned by the fork.

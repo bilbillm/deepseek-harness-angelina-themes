@@ -89,6 +89,7 @@ describe('client plugin', () => {
   afterEach(() => {
     document.head.querySelectorAll('[data-dsh-angelina-themes]').forEach(node => { node.remove() })
     document.body.innerHTML = ''
+    document.body.removeAttribute('data-ds-theme')
     document.body.removeAttribute('data-dsh-angelina-parallax')
     document.body.style.cssText = ''
   })
@@ -98,6 +99,7 @@ describe('client plugin', () => {
     apply(harness.ctx)
     expect(harness.register).toHaveBeenCalledTimes(2)
     expect(harness.snapshot().themes.map(theme => theme.id)).toContain('angelina-light')
+    expect(document.body.getAttribute('data-ds-theme')).toBe('light')
     expect(document.head.querySelector('[data-dsh-angelina-themes]')).not.toBeNull()
     expect(harness.slots).toHaveLength(1)
     expect(harness.slots[0]?.options).toMatchObject({ id: 'angelina-themes', order: 11 })
@@ -105,7 +107,7 @@ describe('client plugin', () => {
     expect(document.head.querySelector('[data-dsh-angelina-themes]')).toBeNull()
   })
 
-  it('reuses fork-owned ids and parallax layers without removing either', () => {
+  it('stays passive when the fork already owns both themes and parallax layers', () => {
     document.body.setAttribute('data-dsh-angelina-parallax', 'light')
     document.body.innerHTML = `
       <div id="dsh-angelina-parallax" data-dsh-angelina-parallax-owner="angelina">
@@ -116,9 +118,22 @@ describe('client plugin', () => {
     const harness = makeContext({ fork: true, active: 'angelina-light' })
     apply(harness.ctx)
     expect(harness.register).not.toHaveBeenCalled()
+    expect(harness.slots).toHaveLength(0)
+    expect(document.head.querySelector('[data-dsh-angelina-themes]')).toBeNull()
     harness.dispose()
     expect(document.getElementById('dsh-angelina-parallax')).toBe(root)
     expect(document.body.getAttribute('data-dsh-angelina-parallax')).toBe('light')
+  })
+
+  it('presents the active theme id for published Harness and restores the host attribute', () => {
+    document.body.setAttribute('data-ds-theme', 'host-light')
+    const harness = makeContext()
+    apply(harness.ctx)
+    expect(document.body.getAttribute('data-ds-theme')).toBe('light')
+    harness.ctx.theme.setTheme('angelina-light')
+    expect(document.body.getAttribute('data-ds-theme')).toBe('angelina-light')
+    harness.dispose()
+    expect(document.body.getAttribute('data-ds-theme')).toBe('host-light')
   })
 
   it('restores an upstream theme from browser-local storage', () => {
@@ -126,6 +141,7 @@ describe('client plugin', () => {
     const harness = makeContext()
     apply(harness.ctx)
     expect(harness.snapshot().active.id).toBe('angelina-dark')
+    expect(document.body.getAttribute('data-ds-theme')).toBe('angelina-dark')
     expect(document.body.getAttribute('data-dsh-angelina-parallax')).toBe('dark')
     harness.dispose()
   })

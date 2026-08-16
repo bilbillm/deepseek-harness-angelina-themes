@@ -27,6 +27,8 @@ dsh plugin --profile web remove dsh-angelina-themes
 
 插件使用浏览器本地键 `dsh-angelina-themes.selection` 记住选择；选择内置 Light/Dark/System 时会把该键恢复为 `system`，不会覆盖宿主设置。采用本地持久化是因为上游 Harness 的设置 API 有固定 namespace allowlist，第三方 Host namespace 不会暴露给浏览器。fork 内置主题仍会通过其 `ui-theme` namespace 同步 Host 设置。
 
+上游发布版 Harness `0.1.0-rc.6` 只投影活动主题的配色模式和 token，不投影第三方 CSS 选择器所需的主题 id。插件会在该环境同步并在卸载时恢复 `body[data-ds-theme]`；检测到已经内置主题的 fork 时不会接管该属性。
+
 ## Fork 内置主题兼容
 
 本仓库的 `feature/angelina-themes` 分支已经内置了两个主题。插件会先读取 `ctx.theme.getTheme().themes`，对已存在的 id 直接复用，只注册缺失的主题，因此不会触发重复 id 异常，也不会在卸载时误删 fork 自己的主题。

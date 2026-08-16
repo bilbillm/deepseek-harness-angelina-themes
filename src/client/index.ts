@@ -24,6 +24,12 @@ export const inject = [
 ] as const
 
 const isAngelina = (id: string): boolean => ANGELINA_IDS.has(id)
+const THEME_ATTRIBUTE = 'data-ds-theme'
+
+function hostOwnsAngelinaThemes(ctx: ClientContext): boolean {
+  const known = new Set(ctx.theme.getTheme().themes.map(theme => theme.id))
+  return ANGELINA_THEMES.every(theme => known.has(theme.id))
+}
 
 function pickerState(snapshot: ThemeSnapshot): PickerState {
   return {
@@ -53,6 +59,32 @@ function registerMissingThemes(ctx: ClientContext): () => void {
   }
   return () => {
     for (const dispose of disposers.reverse()) dispose()
+  }
+}
+
+/**
+ * Published Harness rc.6 presents color-scheme and tokens, but not the active
+ * theme id. The standalone stylesheet needs that id for its scoped selectors.
+ */
+function installThemeAttributePresenter(ctx: ClientContext): () => void {
+  const previous = document.body.getAttribute(THEME_ATTRIBUTE)
+  let presented = previous
+
+  const sync = (snapshot: ThemeSnapshot): void => {
+    presented = snapshot.active.id
+    document.body.setAttribute(THEME_ATTRIBUTE, presented)
+  }
+
+  sync(ctx.theme.getTheme())
+  const offChange = ctx.on('theme/change', payload => {
+    sync(payload as ThemeSnapshot)
+  })
+
+  return () => {
+    offChange()
+    if (document.body.getAttribute(THEME_ATTRIBUTE) !== presented) return
+    if (previous === null) document.body.removeAttribute(THEME_ATTRIBUTE)
+    else document.body.setAttribute(THEME_ATTRIBUTE, previous)
   }
 }
 
@@ -93,7 +125,13 @@ function createSelectionBridge(ctx: ClientContext): {
 
 /** Browser plugin face mounted by the dsh Loader. */
 export function apply(ctx: ClientContext): void {
+  // The feature fork owns the complete presentation. Staying passive avoids
+  // duplicate settings rows and prevents a separately installed plugin build
+  // from overriding the fork's newer glass or parallax implementation.
+  if (hostOwnsAngelinaThemes(ctx)) return
+
   ctx.effect(() => registerMissingThemes(ctx), 'dsh-angelina-themes: register themes')
+  ctx.effect(() => installThemeAttributePresenter(ctx), 'dsh-angelina-themes: active theme attribute')
 
   const bridge = createSelectionBridge(ctx)
   const store = createPickerStore()
