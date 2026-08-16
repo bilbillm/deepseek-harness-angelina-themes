@@ -3,7 +3,7 @@
 把 Codex 的安洁莉娜亮色、暗色主题移植到 [deepseek-harness](https://github.com/deepseek-ai/deepseek-harness) 的独立 `dsh-plugin`。插件包含：
 
 - 安洁莉娜亮色与暗色完整 token 主题；
-- 输入框、composer、菜单、listbox、dialog 的叶节点磨砂玻璃；
+- 输入框、composer、菜单、listbox、dialog、用户消息气泡的叶节点磨砂玻璃；
 - 新建对话与活跃会话共用背景构图和视差层，活跃会话以 3px 浅层背景模糊和低透明度 tint 提升文字可读性；
 - 亮色双层视差，暗色低幅度单层视差；
 - `prefers-reduced-motion`、触摸输入、窄屏和页面失焦降级；

@@ -2,7 +2,7 @@
 
 An independent `dsh-plugin` that ports the Codex Angelina light and dark themes to [deepseek-harness](https://github.com/deepseek-ai/deepseek-harness).
 
-It includes the full token palettes, leaf-node frosted glass for inputs/composer/menus/listboxes/dialogs, one artwork composition and parallax path shared by empty and active conversations, reduced-motion and touch fallbacks, a settings row, durable selection, and complete unload cleanup.
+It includes the full token palettes, leaf-node frosted glass for inputs/composer/menus/listboxes/dialogs/user message bubbles, one artwork composition and parallax path shared by empty and active conversations, reduced-motion and touch fallbacks, a settings row, durable selection, and complete unload cleanup.
 
 简体中文: [README.md](README.md)
 
