@@ -2,7 +2,10 @@ declare module '@deepseek-ai/cordis' {
   export interface Context {}
 }
 
-declare module '@deepseek-ai/dsh-client-runtime/client' {
+// Local adaptation for DeepSeek Harness 0.2.1-rc.5: the client store module is
+// shipped as @deepseek-ai/dsh-client-store in the web platform seed table; the
+// former @deepseek-ai/dsh-client-runtime package no longer exists.
+declare module '@deepseek-ai/dsh-client-store' {
   export interface StoreSpec<T, A> {
     init: () => T
     persist?: string
