@@ -79,13 +79,13 @@ backdrop-filter: blur(18px) saturate(104%);
 | 安洁莉娜亮色 | `-5 / -3` | `10 / 6` | 有明显空间感，但不让内容跟着移动 |
 | 安洁莉娜暗色 | `0.5 / 0.25` | —（未启用前景图） | 夜间使用更稳定，避免高对比背景晃动 |
 
-每组两个数依次是 X/Y 位移系数；指针坐标会先按视口归一化到 `-1..1`，数值越大，图层位移越明显。视差容器使用 `pointer-events: none`，不会挡住任何 Harness 控件。
+每组两个数依次是 X/Y 位移系数；指针坐标会先按视口归一化到 `-1..1`，数值越大，图层位移越明显。视差容器使用 `pointer-events: none`，不会挡住任何 Harness 控件。暗色刻意保持接近静止（最大位移不到 1px）且不启用前景层，这是设计选择，不是缺陷。
 
 ## 安装
 
 ### GitHub 安装（推荐）
 
-需要 DeepSeek Harness Web profile 和 Node.js 20+。仓库已经提交 `lib/` 构建产物，用户安装时不需要在本机编译插件。
+需要 DeepSeek Harness **0.2.0 或更新**（`engines.dsh` 会在旧版本上拒绝安装）以及 Node.js 20+。仓库已经提交 `lib/` 构建产物，用户安装时不需要在本机编译插件。
 
 ```sh
 dsh plugin --profile web add github:bilbillm/deepseek-harness-angelina-themes
@@ -126,6 +126,24 @@ dsh plugin --profile web add .
 - `feature/angelina-themes` fork 已经内置主题时，插件先读取 `ctx.theme.getTheme().themes`，复用已有 id，只注册缺失项，避免重复 id。
 - fork 如果已经创建 `#dsh-angelina-parallax` 和 `body[data-dsh-angelina-parallax]`，插件不会再创建第二套视差层或指针监听。
 - 插件可以和 `dsh-motion`、`dsh-conversation-minimap` 一起安装；主题只负责视觉层，不接管动画插件或会话数据。
+
+### DeepSeek Harness 0.2.x
+
+从 `0.2.0` 起上游客户端有四处变化会影响本插件，均已适配：
+
+| 变化 | 影响 | 处理 |
+| --- | --- | --- |
+| 客户端 store 模块从 `@deepseek-ai/dsh-client-runtime/client` 迁到基座模块表的 `@deepseek-ai/dsh-client-store` | 旧引用会以 `missed the module table` 失败，整个客户端条目加载不出来，设置里也就不出现主题行 | 构建时改为向 store 包取 `defineStore`，并写进 `peerDependencies` |
+| 上游不再提供 fork 专属的 `[data-ds-app-frame]`、`[data-ds-conversation-column]`，对话阶段落在对话根容器的 `[data-phase]` 上 | 让对话表面透明的规则全部落空，对话根容器的不透明底色盖住视差层，表现为"主题生效但没有背景图" | 追加针对 `[data-phase]` 的规则；fork 原有规则保留，两边都能工作 |
+| Windows 桌面端（`preload-app.cjs` 只在 `win32` 上设置）给 `<html>` 加 `data-windows-titlebar`，该变体把中间列刷成 `--dsw-alias-bg-base` | 只有桌面端没有背景图，浏览器里正常，极难复现 | 用 `:has(> [data-slot='main'])` 结构化匹配中间列并置为透明，不依赖构建哈希类名 |
+| 上游会在挂载后几百毫秒采纳持久化的 `ui-theme` 偏好（只支持内置 `system`/`light`/`dark`） | 会顶掉刚从 `localStorage` 恢复的第三方主题，并把存储值改写为 `system`，导致每次重启都回到内置主题 | 启动后 3 秒窗口内、最多重放 2 次恢复用户选择；窗口结束后所有变更按用户操作处理 |
+
+排障时先看整条祖先链，`[data-phase]` 和外壳都透明了还可能有一层平台变体容器不透明：
+
+```js
+let e = document.elementFromPoint(innerWidth - 120, innerHeight / 2)
+while (e) { const s = getComputedStyle(e); console.log(e.className, s.backgroundColor, s.backgroundImage.slice(0, 20)); e = e.parentElement }
+```
 
 ## 构建、测试与审计
 
