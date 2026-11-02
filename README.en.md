@@ -79,13 +79,13 @@ Glass is applied only to visible leaf surfaces. Sidebar/frame ancestors are left
 | Angelina light | `-5 / -3` | `10 / 6` | A clear sense of depth without moving the UI |
 | Angelina dark | `0.5 / 0.25` | — (foreground artwork disabled) | Calm, stable night-time motion |
 
-Each pair is the X/Y movement coefficient after pointer coordinates are normalized to `-1..1`. The parallax layer has `pointer-events: none`, so it never blocks Harness controls. Titles, selectors, composers, controls, and copy are deliberately excluded from the transform.
+Each pair is the X/Y movement coefficient after pointer coordinates are normalized to `-1..1`. The parallax layer has `pointer-events: none`, so it never blocks Harness controls. Titles, selectors, composers, controls, and copy are deliberately excluded from the transform. Dark mode is intentionally near-static (under 1 px of travel) with no foreground layer; that is a design choice, not a defect.
 
 ## Install
 
 ### GitHub (recommended)
 
-Use a DeepSeek Harness Web profile with Node.js 20 or newer. `lib/` is committed, so a source install does not require a user-side build:
+Use a DeepSeek Harness **0.2.0 or newer** profile (`engines.dsh` rejects older runtimes) with Node.js 20 or newer. `lib/` is committed, so a source install does not require a user-side build:
 
 ```sh
 dsh plugin --profile web add github:bilbillm/deepseek-harness-angelina-themes
@@ -124,6 +124,24 @@ After editing `src/`, run `pnpm build` again and restart DSH. End users can inst
 - The `feature/angelina-themes` fork already owns both theme ids. The plugin reuses existing definitions and registers only missing ids, avoiding duplicate-id failures.
 - If the fork already owns `#dsh-angelina-parallax` and `body[data-dsh-angelina-parallax]`, the plugin does not add another layer stack or pointer listener.
 - It can be installed alongside `dsh-motion` and `dsh-conversation-minimap`; this package owns the visual layer and does not take over motion-plugin or conversation data behavior.
+
+### DeepSeek Harness 0.2.x
+
+Four upstream client changes affected this plugin; all are handled:
+
+| Change | Effect | Handling |
+| --- | --- | --- |
+| The client store moved from `@deepseek-ai/dsh-client-runtime/client` to the platform seed module `@deepseek-ai/dsh-client-store` | The old specifier misses the module table, the whole client entry fails to load, and no theme row appears | Import `defineStore` from the store package and declare it in `peerDependencies` |
+| Upstream dropped the fork-only `[data-ds-app-frame]` and `[data-ds-conversation-column]` hooks; the conversation phase now sits on the conversation root as `[data-phase]` | Every "make the surface transparent" rule stopped matching, so the opaque conversation root covered the parallax layers: the theme looked active but the artwork was missing | Added `[data-phase]` rules; the fork rules are kept so both builds work |
+| On Windows the Desktop preload sets `data-windows-titlebar` on `<html>`, and that variant fills the centre column with `--dsw-alias-bg-base` | Background missing on Desktop only, never in a browser | Match the centre column structurally with `:has(> [data-slot='main'])` instead of a build-hashed class |
+| Upstream adopts the persisted `ui-theme` preference a few hundred ms after mount (built-in ids only) | Replaces the just-restored third-party theme and rewrites the stored key to `system`, so every restart fell back to a built-in theme | Re-apply the stored choice at most twice inside a 3 s post-boot window; afterwards every change is treated as the user's |
+
+When debugging, walk the whole ancestor chain: even with `[data-phase]` and the frame transparent, a platform-variant container can still be opaque:
+
+```js
+let e = document.elementFromPoint(innerWidth - 120, innerHeight / 2)
+while (e) { const s = getComputedStyle(e); console.log(e.className, s.backgroundColor, s.backgroundImage.slice(0, 20)); e = e.parentElement }
+```
 
 ## Build, test, and audit
 

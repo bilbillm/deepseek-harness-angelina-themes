@@ -2,7 +2,7 @@ import {
   defineStore,
   type BakedActions,
   type EngineStoreHandle,
-} from '@deepseek-ai/dsh-client-runtime/client'
+} from '@deepseek-ai/dsh-client-store'
 import type { PickerState } from './types.ts'
 
 export type PickerStoreActions = {

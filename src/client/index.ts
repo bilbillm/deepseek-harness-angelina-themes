@@ -1,4 +1,4 @@
-import type { BakedActions } from '@deepseek-ai/dsh-client-runtime/client'
+import type { BakedActions } from '@deepseek-ai/dsh-client-store'
 import { ANGELINA_IDS, ANGELINA_THEMES } from '../themes.ts'
 import {
   DEFAULT_SELECTION,
@@ -142,11 +142,42 @@ export function apply(ctx: ClientContext): void {
   }
 
   ctx.effect(() => {
-    const offChange = ctx.on('theme/change', payload => {
+    /**
+     * DeepSeek Harness 0.2.x adopts its persisted `ui-theme` preference a few
+     * hundred milliseconds after mount, replacing the preference this plugin
+     * restored from localStorage (third-party ids are not part of the built-in
+     * settings schema, so the host always wins that race). Re-apply the stored
+     * choice a bounded number of times inside a short boot window; after the
+     * window every change is treated as the user's own.
+     */
+    const adoptWindowEnd = Date.now() + 3000
+    let reapplied = 0
+    const storedAngelinaChoice = (): string | null => {
+      try {
+        const value = localStorage.getItem(THEME_STORAGE_KEY)
+        return isThemeSelection(value) && isAngelina(value) ? value : null
+      } catch {
+        return null
+      }
+    }
+
+    const onThemeChange = (payload: unknown): void => {
       const snapshot = payload as ThemeSnapshot
+      if (Date.now() < adoptWindowEnd && reapplied < 2 && !isAngelina(snapshot.active.id)) {
+        const intent = storedAngelinaChoice()
+        if (intent !== null && ctx.theme.getTheme().themes.some(theme => theme.id === intent)) {
+          reapplied += 1
+          // Skip bridge.sync here: it would overwrite the stored choice with
+          // `system`, which is exactly how the selection used to be lost.
+          ctx.theme.setTheme(intent)
+          return
+        }
+      }
       bridge.sync(snapshot)
       syncStore()
-    })
+    }
+
+    const offChange = ctx.on('theme/change', onThemeChange)
     bridge.restore()
     syncStore()
     return () => {

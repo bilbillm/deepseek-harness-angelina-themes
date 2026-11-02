@@ -718,6 +718,61 @@ body[data-dsh-angelina-parallax] [data-slot='conversation'] > [data-phase='activ
     transform: none !important;
   }
 }
+
+/* ---------------------------------------------------------------------------
+ * DeepSeek Harness 0.2.x compatibility.
+ *
+ * The surface rules above were written against the feature fork, which exposed
+ * '[data-ds-app-frame]' and '[data-ds-conversation-column]'. Upstream 0.2.x has
+ * neither (both names appear zero times in the shipped client bundles); it puts
+ * the conversation phase on the conversation root itself, and that root keeps
+ * painting '--dsw-alias-bg-base' as an opaque fill. Because the parallax layers
+ * live behind '#root', that fill covered the artwork completely: the theme
+ * looked active (tokens, glass) but showed no background image.
+ *
+ * Addressing '[data-phase]' directly restores the intended transparency. The
+ * selector outranks the component's single-class rule, so no !important is
+ * needed, and it is scoped to the plugin's own parallax state.
+ * ------------------------------------------------------------------------- */
+body[data-dsh-angelina-parallax] [data-phase] {
+  background-color: transparent;
+  background-image: none;
+}
+
+/* Without the parallax layers (fork build, or a controller that stood down)
+   the hero lives on the same surface, so keep that path working too. */
+body[data-ds-theme^='angelina-']:not([data-dsh-angelina-parallax]) [data-phase] {
+  background-color: transparent;
+  background-image: var(--dsh-angelina-app-scrim), var(--dsh-angelina-hero-image);
+  background-position: var(--dsh-angelina-hero-position);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+/* Desktop (Windows frameless chrome) puts [data-windows-titlebar] on <html>,
+   and that variant paints the centre column with an opaque base colour. It sits
+   above the layers, so the artwork vanished on Desktop while showing fine in a
+   browser. Select that column structurally through the main slot it hosts, so a
+   renamed hashed class cannot break this again. */
+body[data-dsh-angelina-parallax] [data-slot='root'] :has(> [data-slot='main']) {
+  background-color: transparent;
+  background-image: none;
+}
+
+body[data-ds-theme^='angelina-']:not([data-dsh-angelina-parallax]) [data-slot='root'] :has(> [data-slot='main']) {
+  background-color: transparent;
+  background-image: var(--dsh-angelina-app-scrim), var(--dsh-angelina-hero-image);
+  background-position: var(--dsh-angelina-hero-position);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  body[data-dsh-angelina-parallax] [data-phase] [data-slot='conversation.session.header'] > header {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
 `
 
 export function installAngelinaStyles(): () => void {

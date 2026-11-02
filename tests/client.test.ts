@@ -75,6 +75,14 @@ function makeContext(options: { fork?: boolean; active?: string } = {}) {
     register,
     slots: slotRegistrations,
     snapshot,
+    /** Simulate the host adopting its persisted built-in preference. */
+    adoptBuiltin: (id: 'light' | 'dark') => {
+      const next = themes.find(theme => theme.id === id)
+      if (next === undefined) throw new Error(`unknown theme ${id}`)
+      preference = 'system'
+      active = next
+      emit()
+    },
     dispose: () => {
       for (const disposer of effectDisposers.reverse()) disposer()
     },
@@ -144,5 +152,49 @@ describe('client plugin', () => {
     expect(document.body.getAttribute('data-ds-theme')).toBe('angelina-dark')
     expect(document.body.getAttribute('data-dsh-angelina-parallax')).toBe('dark')
     harness.dispose()
+  })
+
+  it('keeps the stored choice when the host adopts its own preference right after mount', () => {
+    // Upstream adopts the persisted ui-theme namespace a few hundred ms after
+    // mount, which used to replace the restored third-party theme and to
+    // overwrite the stored key with `system`.
+    localStorage.setItem('dsh-angelina-themes.selection', 'angelina-dark')
+    const harness = makeContext()
+    apply(harness.ctx)
+    expect(harness.snapshot().active.id).toBe('angelina-dark')
+
+    harness.adoptBuiltin('light')
+
+    expect(harness.snapshot().active.id).toBe('angelina-dark')
+    expect(localStorage.getItem('dsh-angelina-themes.selection')).toBe('angelina-dark')
+    harness.dispose()
+  })
+
+  it('lets a built-in choice win once the boot window has passed', () => {
+    const start = 1_700_000_000_000
+    const now = vi.spyOn(Date, 'now').mockReturnValue(start)
+    localStorage.setItem('dsh-angelina-themes.selection', 'angelina-dark')
+    const harness = makeContext()
+    apply(harness.ctx)
+
+    now.mockReturnValue(start + 10_000)
+    harness.adoptBuiltin('dark')
+
+    expect(harness.snapshot().active.id).toBe('dark')
+    expect(localStorage.getItem('dsh-angelina-themes.selection')).toBe('system')
+    now.mockRestore()
+    harness.dispose()
+  })
+
+  it('ships the upstream surface rules that keep the artwork visible on 0.2.x', () => {
+    const harness = makeContext()
+    apply(harness.ctx)
+    const css = document.head.querySelector<HTMLStyleElement>('style[data-dsh-angelina-themes]')?.textContent ?? ''
+    harness.dispose()
+
+    // Conversation surface: upstream exposes the phase on the root itself.
+    expect(css).toContain('body[data-dsh-angelina-parallax] [data-phase]')
+    // Desktop centre column: the windows titlebar variant paints it opaque.
+    expect(css).toContain(":has(> [data-slot='main'])")
   })
 })
